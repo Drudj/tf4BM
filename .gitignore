@@ -23,6 +23,7 @@ go.work
 *.tfstate.*
 *.tfvars
 !*.tfvars.example
+!*.tfvars.template
 .terraform/
 .terraform.lock.hcl
 crash.log
@@ -51,6 +52,14 @@ Thumbs.db
 main.tf
 test_*.tf
 !examples/
+!test-infrastructure/
+
+# Test infrastructure sensitive files
+test-infrastructure/terraform.tfvars
+test-infrastructure/*.log
+test-infrastructure/test-results.json
+test-infrastructure/terraform-state.json
+test-infrastructure/test-report.md
 
 # Build artifacts
 dist/
