@@ -17,7 +17,7 @@ import (
 
 const (
 	// DefaultEndpoint - базовый URL API Selectel для выделенных серверов
-	DefaultEndpoint = "https://api.selectel.ru/dedicated/v2"
+	DefaultEndpoint = "https://api.selectel.ru/v1/dedicated"
 
 	// DefaultTimeout - таймаут по умолчанию для HTTP запросов
 	DefaultTimeout = 30 * time.Second
@@ -119,6 +119,10 @@ func (c *Client) prepareRequest(ctx context.Context, method, path string, body i
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("User-Agent", c.userAgent)
+
+	// Пробуем разные варианты аутентификации
+	req.Header.Set("X-Token", c.token)
+	req.Header.Set("X-Auth-Token", c.token)
 	req.Header.Set("Authorization", "Bearer "+c.token)
 
 	if c.projectID != "" {

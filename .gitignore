@@ -54,6 +54,9 @@ test_*.tf
 !examples/
 !test-infrastructure/
 
+# User credentials and sensitive data
+user.md
+
 # Test infrastructure sensitive files
 test-infrastructure/terraform.tfvars
 test-infrastructure/*.log
