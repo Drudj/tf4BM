@@ -1,0 +1,8 @@
+# Пример файла с переменными для базового сервера
+# Переименуйте в terraform.tfvars и заполните реальными значениями
+
+# UUID проекта Selectel
+project_uuid = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
+# SSH публичный ключ для доступа к серверу
+ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC... your-key-here" 

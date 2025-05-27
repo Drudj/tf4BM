@@ -1,0 +1,62 @@
+terraform {
+  required_version = ">= 1.0"
+  
+  required_providers {
+    selectel = {
+      source  = "selectel/selectel-baremetal"
+      version = "0.1.0"
+    }
+  }
+}
+
+provider "selectel" {
+  token      = "test-token"
+  project_id = "test-project-id"
+  endpoint   = "https://api.selectel.ru/dedicated/v2"
+}
+
+# Data sources для получения необходимых UUID
+data "selectel_baremetal_locations" "all" {}
+
+data "selectel_baremetal_services" "all" {}
+
+data "selectel_baremetal_os_templates" "all" {}
+
+data "selectel_baremetal_price_plans" "all" {}
+
+# Создание сервера
+resource "selectel_baremetal_server" "test" {
+  name              = "test-server"
+  service_uuid      = "test-service-uuid"
+  location_uuid     = "test-location-uuid"
+  price_plan_uuid   = "test-price-plan-uuid"
+  project_uuid      = "test-project-uuid"
+
+  network {
+    type      = "public"
+    bandwidth = 1000
+  }
+
+  os {
+    template_uuid = "test-os-template-uuid"
+    ssh_keys      = ["ssh-rsa AAAAB3NzaC1yc2E..."]
+  }
+
+  tags = {
+    Environment = "test"
+    Purpose     = "testing"
+  }
+}
+
+# Outputs
+output "server_uuid" {
+  value = selectel_baremetal_server.test.uuid
+}
+
+output "server_status" {
+  value = selectel_baremetal_server.test.status
+}
+
+output "server_ip_addresses" {
+  value = selectel_baremetal_server.test.ip_addresses
+} 
