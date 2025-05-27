@@ -77,11 +77,13 @@ git push -u origin main
 
 ## Готовые ссылки
 
-После создания репозитория будут доступны:
+Проект загружен в репозиторий:
 
-- **Основной репозиторий:** `https://github.com/konstantinansimov/terraform-provider-selectel-baremetal`
-- **Клонирование:** `git clone https://github.com/konstantinansimov/terraform-provider-selectel-baremetal.git`
-- **Issues:** `https://github.com/konstantinansimov/terraform-provider-selectel-baremetal/issues`
+- **Основной репозиторий:** `https://github.com/Drudj/tf_for_BareMetal`
+- **Клонирование:** `git clone https://github.com/Drudj/tf_for_BareMetal.git`
+- **Issues:** `https://github.com/Drudj/tf_for_BareMetal/issues`
+
+✅ **Код успешно загружен!** (58 объектов, 66.06 KiB)
 
 ## Статус проекта
 
