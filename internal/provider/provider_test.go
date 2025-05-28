@@ -26,4 +26,9 @@ func TestProvider(t *testing.T) {
 	if _, ok := provider.(*SelectelBaremetalProvider); !ok {
 		t.Fatal("Expected provider to be of type *SelectelBaremetalProvider")
 	}
+
+	// Test that provider factories are configured
+	if len(testAccProtoV6ProviderFactories) == 0 {
+		t.Fatal("Expected testAccProtoV6ProviderFactories to be configured")
+	}
 }

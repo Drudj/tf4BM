@@ -164,7 +164,7 @@ func (c *Client) executeRequest(ctx context.Context, req *http.Request) (*http.R
 
 		// Проверяем, нужно ли повторить запрос
 		if c.shouldRetry(resp.StatusCode) {
-			resp.Body.Close()
+			_ = resp.Body.Close() // Игнорируем ошибку закрытия при retry
 			lastErr = fmt.Errorf("HTTP %d: %s", resp.StatusCode, resp.Status)
 			tflog.Warn(ctx, "Request returned retryable status", map[string]interface{}{
 				"status_code": resp.StatusCode,
@@ -196,7 +196,13 @@ func (c *Client) shouldRetry(statusCode int) bool {
 
 // parseResponse парсит ответ API
 func (c *Client) parseResponse(ctx context.Context, resp *http.Response, result interface{}) error {
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			tflog.Warn(ctx, "Failed to close response body", map[string]interface{}{
+				"error": err.Error(),
+			})
+		}
+	}()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
