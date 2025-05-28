@@ -56,7 +56,7 @@ func (p *SelectelBaremetalProvider) Schema(ctx context.Context, req provider.Sch
 				Optional:            true,
 			},
 			"endpoint": schema.StringAttribute{
-				MarkdownDescription: "URL эндпоинта API выделенных серверов Selectel. По умолчанию: `https://api.selectel.ru/client/v2`.",
+				MarkdownDescription: "URL эндпоинта API выделенных серверов Selectel. По умолчанию: `https://api.selectel.ru/servers/v2`.",
 				Description:         "URL эндпоинта API выделенных серверов Selectel.",
 				Optional:            true,
 			},
@@ -153,7 +153,7 @@ func (p *SelectelBaremetalProvider) Configure(ctx context.Context, req provider.
 	}
 
 	if endpoint == "" {
-		endpoint = "https://api.selectel.ru/v1/dedicated"
+		endpoint = "https://api.selectel.ru/servers/v2"
 	}
 
 	if resp.Diagnostics.HasError() {
