@@ -36,11 +36,11 @@ data "selectel_baremetal_price_plans" "all" {}
 
 # Создание базового сервера
 resource "selectel_baremetal_server" "web" {
-  name              = "web-server-01"
-  service_uuid      = data.selectel_baremetal_services.all.services[0].uuid
-  location_uuid     = data.selectel_baremetal_location.msk.uuid
-  price_plan_uuid   = data.selectel_baremetal_price_plans.all.price_plans[0].uuid
-  project_uuid      = var.project_uuid
+  name            = "web-server-01"
+  service_uuid    = data.selectel_baremetal_services.all.services[0].uuid
+  location_uuid   = data.selectel_baremetal_location.msk.uuid
+  price_plan_uuid = data.selectel_baremetal_price_plans.all.price_plans[0].uuid
+  project_uuid    = var.project_uuid
 
   network {
     type      = "public"
