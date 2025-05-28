@@ -120,13 +120,11 @@ func (c *Client) prepareRequest(ctx context.Context, method, path string, body i
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("User-Agent", c.userAgent)
 
-	// Пробуем разные варианты аутентификации
+	// Используем статический токен в заголовке X-Token для Dedicated Servers API
 	req.Header.Set("X-Token", c.token)
-	req.Header.Set("X-Auth-Token", c.token)
-	req.Header.Set("Authorization", "Bearer "+c.token)
 
 	if c.projectID != "" {
-		req.Header.Set("X-Project-ID", c.projectID)
+		req.Header.Set("X-Project-Id", c.projectID)
 	}
 
 	return req, nil
