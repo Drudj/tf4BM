@@ -12,3 +12,9 @@ alwaysApply: false
 - https://docs.selectel.ru/servers-and-infrastructure/dedicated/
 - https://docs.selectel.ru/terraform/quickstart/
 - https://registry.terraform.io/providers/selectel/selectel/latest/docs
+
+Для управления инфраструктурой используй следующие эндпоинты:
+https://api.selectel.ru/servers/v2/location
+https://api.selectel.ru/servers/v2/service
+https://api.selectel.ru/servers/v2/plan
+https://api.selectel.ru/servers/v2/boot/template/os/new

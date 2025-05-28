@@ -27,7 +27,7 @@ func NewAPIClient(config Config) *APIClient {
 // GetLocations получает список всех локаций
 func (c *APIClient) GetLocations(ctx context.Context) ([]models.Location, error) {
 	var response models.LocationsResponse
-	err := c.Get(ctx, "locations", &response)
+	err := c.Get(ctx, "location", &response)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get locations: %w", err)
 	}
@@ -37,7 +37,7 @@ func (c *APIClient) GetLocations(ctx context.Context) ([]models.Location, error)
 // GetLocation получает локацию по UUID
 func (c *APIClient) GetLocation(ctx context.Context, uuid string) (*models.Location, error) {
 	var location models.Location
-	err := c.Get(ctx, fmt.Sprintf("locations/%s", uuid), &location)
+	err := c.Get(ctx, fmt.Sprintf("location/%s", uuid), &location)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get location %s: %w", uuid, err)
 	}
@@ -49,7 +49,7 @@ func (c *APIClient) GetLocation(ctx context.Context, uuid string) (*models.Locat
 // GetServices получает список всех услуг
 func (c *APIClient) GetServices(ctx context.Context) ([]models.Service, error) {
 	var response models.ServicesResponse
-	err := c.Get(ctx, "services", &response)
+	err := c.Get(ctx, "service", &response)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get services: %w", err)
 	}
@@ -64,7 +64,7 @@ func (c *APIClient) GetServicesWithFilters(ctx context.Context, filters map[stri
 	}
 
 	var response models.ServicesResponse
-	err := c.GetWithQuery(ctx, "services", params, &response)
+	err := c.GetWithQuery(ctx, "service", params, &response)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get services with filters: %w", err)
 	}
@@ -74,7 +74,7 @@ func (c *APIClient) GetServicesWithFilters(ctx context.Context, filters map[stri
 // GetService получает услугу по UUID
 func (c *APIClient) GetService(ctx context.Context, uuid string) (*models.Service, error) {
 	var service models.Service
-	err := c.Get(ctx, fmt.Sprintf("services/%s", uuid), &service)
+	err := c.Get(ctx, fmt.Sprintf("service/%s", uuid), &service)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get service %s: %w", uuid, err)
 	}
@@ -86,7 +86,7 @@ func (c *APIClient) GetService(ctx context.Context, uuid string) (*models.Servic
 // GetPricePlans получает список тарифных планов
 func (c *APIClient) GetPricePlans(ctx context.Context) ([]models.PricePlan, error) {
 	var response models.PricePlansResponse
-	err := c.Get(ctx, "price-plans", &response)
+	err := c.Get(ctx, "plan", &response)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get price plans: %w", err)
 	}
@@ -99,7 +99,7 @@ func (c *APIClient) GetPricePlansForService(ctx context.Context, serviceUUID str
 	params.Add("service_uuid", serviceUUID)
 
 	var response models.PricePlansResponse
-	err := c.GetWithQuery(ctx, "price-plans", params, &response)
+	err := c.GetWithQuery(ctx, "plan", params, &response)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get price plans for service %s: %w", serviceUUID, err)
 	}
@@ -111,7 +111,7 @@ func (c *APIClient) GetPricePlansForService(ctx context.Context, serviceUUID str
 // GetOSTemplates получает список шаблонов операционных систем
 func (c *APIClient) GetOSTemplates(ctx context.Context) ([]models.OSTemplate, error) {
 	var response models.OSTemplatesResponse
-	err := c.Get(ctx, "os-templates", &response)
+	err := c.Get(ctx, "boot/template/os/new", &response)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get OS templates: %w", err)
 	}
@@ -121,7 +121,7 @@ func (c *APIClient) GetOSTemplates(ctx context.Context) ([]models.OSTemplate, er
 // GetOSTemplate получает шаблон ОС по UUID
 func (c *APIClient) GetOSTemplate(ctx context.Context, uuid string) (*models.OSTemplate, error) {
 	var template models.OSTemplate
-	err := c.Get(ctx, fmt.Sprintf("os-templates/%s", uuid), &template)
+	err := c.Get(ctx, fmt.Sprintf("boot/template/os/new/%s", uuid), &template)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get OS template %s: %w", uuid, err)
 	}
