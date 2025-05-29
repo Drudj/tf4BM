@@ -1,4 +1,4 @@
-module github.com/selectel/terraform-provider-selectel-baremetal
+module github.com/Drudj/tf_for_BareMetal
 
 go 1.24
 

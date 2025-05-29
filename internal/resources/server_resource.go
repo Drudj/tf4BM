@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/Drudj/tf_for_BareMetal/internal/client"
+	"github.com/Drudj/tf_for_BareMetal/internal/models"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -12,8 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/selectel/terraform-provider-selectel-baremetal/internal/client"
-	"github.com/selectel/terraform-provider-selectel-baremetal/internal/models"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.

@@ -4,6 +4,9 @@ import (
 	"context"
 	"os"
 
+	"github.com/Drudj/tf_for_BareMetal/internal/client"
+	"github.com/Drudj/tf_for_BareMetal/internal/datasources"
+	"github.com/Drudj/tf_for_BareMetal/internal/resources"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -11,9 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/selectel/terraform-provider-selectel-baremetal/internal/client"
-	"github.com/selectel/terraform-provider-selectel-baremetal/internal/datasources"
-	"github.com/selectel/terraform-provider-selectel-baremetal/internal/resources"
 )
 
 // Ensure SelectelBaremetalProvider satisfies various provider interfaces.

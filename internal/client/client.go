@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Drudj/tf_for_BareMetal/internal/models"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/selectel/terraform-provider-selectel-baremetal/internal/models"
 )
 
 const (
