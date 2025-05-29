@@ -8,7 +8,7 @@ testacc:
 # Build provider
 .PHONY: build
 build:
-	go build -o terraform-provider-selectel-baremetal github.com/Drudj/tf_for_BareMetal/cmd/terraform-provider-selectel-baremetal
+	go build -o terraform-provider-selectel-baremetal ./cmd/terraform-provider-selectel-baremetal
 
 # Install provider locally for development
 .PHONY: install
