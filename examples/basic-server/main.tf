@@ -20,38 +20,38 @@ provider "selectel-baremetal" {
 }
 
 # Получение списка доступных локаций
-data "selectel_baremetal_locations" "all" {}
+data "selectel-baremetal_locations" "all" {}
 
 # Получение списка доступных услуг
-data "selectel_baremetal_services" "all" {}
+data "selectel-baremetal_services" "all" {}
 
 # Получение тарифных планов
-data "selectel_baremetal_price_plans" "all" {}
+data "selectel-baremetal_price_plans" "all" {}
 
 # Получение Ubuntu шаблонов
-data "selectel_baremetal_os_templates" "ubuntu" {}
+data "selectel-baremetal_os_templates" "ubuntu" {}
 
 # Локальные переменные для упрощения конфигурации
 locals {
   # Выбираем первую доступную локацию (обычно Moscow)
-  location_uuid = data.selectel_baremetal_locations.all.locations[0].uuid
+  location_uuid = data.selectel-baremetal_locations.all.locations[0].uuid
 
   # Выбираем первую доступную услугу
-  service_uuid = data.selectel_baremetal_services.all.services[0].uuid
+  service_uuid = data.selectel-baremetal_services.all.services[0].uuid
 
   # Выбираем первый доступный тарифный план
-  price_plan_uuid = data.selectel_baremetal_price_plans.all.price_plans[0].uuid
+  price_plan_uuid = data.selectel-baremetal_price_plans.all.price_plans[0].uuid
 
   # Выбираем Ubuntu шаблон
   ubuntu_template = [
-    for template in data.selectel_baremetal_os_templates.ubuntu.templates :
+    for template in data.selectel-baremetal_os_templates.ubuntu.templates :
     template if can(regex("ubuntu", lower(template.name)))
   ][0]
 }
 
 # Создание базового сервера
-resource "selectel_baremetal_server" "web" {
-  name            = "web-server-basic"
+resource "selectel-baremetal_server" "web" {
+  name            = var.server_name
   service_uuid    = local.service_uuid
   location_uuid   = local.location_uuid
   price_plan_uuid = local.price_plan_uuid
@@ -72,44 +72,10 @@ resource "selectel_baremetal_server" "web" {
 
   # Теги для организации ресурсов
   tags = {
-    Environment = "production"
+    Environment = var.environment
     Application = "web"
     Owner       = "terraform"
     Project     = "basic-example"
-  }
-}
-
-# Переменные
-variable "project_uuid" {
-  description = "UUID проекта Selectel"
-  type        = string
-
-  validation {
-    condition     = can(regex("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", var.project_uuid))
-    error_message = "Project UUID должен быть в формате UUID."
-  }
-}
-
-variable "ssh_public_keys" {
-  description = "Список SSH публичных ключей для доступа к серверу"
-  type        = list(string)
-  default     = []
-
-  validation {
-    condition     = length(var.ssh_public_keys) > 0
-    error_message = "Необходимо указать хотя бы один SSH ключ."
-  }
-}
-
-variable "root_password" {
-  description = "Пароль root пользователя (опционально, если используются SSH ключи)"
-  type        = string
-  default     = ""
-  sensitive   = true
-
-  validation {
-    condition     = var.root_password == "" || length(var.root_password) >= 8
-    error_message = "Пароль должен содержать минимум 8 символов."
   }
 }
 
@@ -117,18 +83,18 @@ variable "root_password" {
 output "server_info" {
   description = "Информация о созданном сервере"
   value = {
-    uuid         = selectel_baremetal_server.web.uuid
-    name         = selectel_baremetal_server.web.name
-    status       = selectel_baremetal_server.web.status
-    power_status = selectel_baremetal_server.web.power_status
-    ip_addresses = selectel_baremetal_server.web.ip_addresses
+    uuid         = resource.selectel-baremetal_server.web.uuid
+    name         = resource.selectel-baremetal_server.web.name
+    status       = resource.selectel-baremetal_server.web.status
+    power_status = resource.selectel-baremetal_server.web.power_status
+    ip_addresses = resource.selectel-baremetal_server.web.ip_addresses
   }
 }
 
 output "location_info" {
   description = "Информация о выбранной локации"
   value = {
-    name = data.selectel_baremetal_locations.all.locations[0].name
+    name = data.selectel-baremetal_locations.all.locations[0].name
     uuid = local.location_uuid
   }
 }
@@ -136,7 +102,7 @@ output "location_info" {
 output "service_info" {
   description = "Информация о выбранной услуге"
   value = {
-    name = data.selectel_baremetal_services.all.services[0].name
+    name = data.selectel-baremetal_services.all.services[0].name
     uuid = local.service_uuid
   }
 }

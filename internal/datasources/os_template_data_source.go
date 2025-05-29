@@ -39,7 +39,7 @@ type OSTemplateDataSourceModel struct {
 }
 
 func (d *OSTemplateDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = "selectel_baremetal_os_template"
+	resp.TypeName = req.ProviderTypeName + "_os_template"
 }
 
 func (d *OSTemplateDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {

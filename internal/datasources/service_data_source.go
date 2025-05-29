@@ -42,7 +42,7 @@ type ServiceDataSourceModel struct {
 }
 
 func (d *ServiceDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = "selectel_baremetal_service"
+	resp.TypeName = req.ProviderTypeName + "_service"
 }
 
 func (d *ServiceDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {

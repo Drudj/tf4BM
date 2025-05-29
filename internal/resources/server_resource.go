@@ -69,7 +69,7 @@ type ServerIPAddressModel struct {
 }
 
 func (r *ServerResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = "selectel_baremetal_server"
+	resp.TypeName = req.ProviderTypeName + "_server"
 }
 
 func (r *ServerResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {

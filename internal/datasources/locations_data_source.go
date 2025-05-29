@@ -40,7 +40,7 @@ type LocationModel struct {
 }
 
 func (d *LocationsDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = "selectel_baremetal_locations"
+	resp.TypeName = req.ProviderTypeName + "_locations"
 }
 
 func (d *LocationsDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {

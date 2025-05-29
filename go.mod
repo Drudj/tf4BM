@@ -1,6 +1,6 @@
 module github.com/selectel/terraform-provider-selectel-baremetal
 
-go 1.23
+go 1.24
 
 require (
 	github.com/hashicorp/terraform-plugin-framework v1.4.2

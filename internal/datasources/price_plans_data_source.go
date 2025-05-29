@@ -33,7 +33,7 @@ type PricePlansDataSourceModel struct {
 }
 
 func (d *PricePlansDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = "selectel_baremetal_price_plans"
+	resp.TypeName = req.ProviderTypeName + "_price_plans"
 }
 
 func (d *PricePlansDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
