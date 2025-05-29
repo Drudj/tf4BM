@@ -1,8 +1,19 @@
-# Пример файла с переменными для базового сервера
-# Переименуйте в terraform.tfvars и заполните реальными значениями
+# Пример конфигурации переменных для базового сервера
+# Скопируйте этот файл в terraform.tfvars и заполните актуальными значениями
 
-# UUID проекта Selectel
-project_uuid = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+# UUID вашего проекта в Selectel
+project_uuid = "f75e16974d78419488ff638c19d799a4"
 
-# SSH публичный ключ для доступа к серверу
-ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC... your-key-here" 
+# SSH публичные ключи для доступа к серверу
+ssh_public_keys = [
+  "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC7... your-key@hostname"
+]
+
+# Опционально: пароль root (если не используете SSH ключи)
+# root_password = "SecurePassword123!"
+
+# Имя сервера
+server_name = "my-web-server"
+
+# Окружение
+environment = "production" 

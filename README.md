@@ -1,218 +1,253 @@
-# Terraform Provider for Selectel Bare Metal Servers
+# Terraform Provider для Selectel Bare Metal Серверов
 
-[![CI](https://github.com/selectel/terraform-provider-selectel-baremetal/actions/workflows/ci.yml/badge.svg)](https://github.com/selectel/terraform-provider-selectel-baremetal/actions/workflows/ci.yml)
+[![CI](https://github.com/Drudj/tf_for_BareMetal/actions/workflows/ci.yml/badge.svg)](https://github.com/Drudj/tf_for_BareMetal/actions/workflows/ci.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/selectel/terraform-provider-selectel-baremetal)](https://goreportcard.com/report/github.com/selectel/terraform-provider-selectel-baremetal)
-[![codecov](https://codecov.io/gh/selectel/terraform-provider-selectel-baremetal/branch/main/graph/badge.svg)](https://codecov.io/gh/selectel/terraform-provider-selectel-baremetal)
 
-Terraform provider для управления выделенными серверами (bare metal) Selectel через Infrastructure as Code.
+Terraform провайдер для управления выделенными серверами (bare metal) Selectel через Infrastructure as Code.
 
-## Статус разработки
+## 🚀 Статус разработки
 
-✅ **Основная функциональность реализована** - Провайдер готов для базового использования.
+✅ **Готов к использованию** - Основная функциональность полностью реализована и протестирована.
 
-### Реализованные возможности
+### ✅ Реализованные возможности
 
-- ✅ **Управление выделенными серверами**: Создание, настройка и удаление физических серверов
-- ✅ **Сетевые настройки**: Настройка публичных и приватных сетей, VLAN
-- ✅ **Управление ОС**: Установка операционных систем с SSH ключами и паролями
-- ✅ **Data Sources**: Получение информации о локациях, услугах, OS шаблонах и тарифах
-- ✅ **Интеграция**: Полная совместимость с Terraform Framework
-- ✅ **Теги и метаданные**: Поддержка пользовательских тегов
+- **Управление выделенными серверами**: Создание, обновление и удаление физических серверов
+- **Сетевые настройки**: Публичные и приватные сети, настройка полосы пропускания, VLAN
+- **Операционные системы**: Автоматическая установка с SSH ключами, паролями и cloud-init
+- **Data Sources**: Получение информации о локациях, услугах, OS шаблонах и тарифах
+- **Теги и метаданные**: Полная поддержка пользовательских тегов для организации ресурсов
+- **Импорт существующих серверов**: Интеграция с уже созданными ресурсами
 
-### Планируемые возможности
+## 📋 Требования
 
-- 🚧 **Управление питанием**: Включение, выключение, перезагрузка серверов  
-- 🚧 **Расширенные сетевые настройки**: Дополнительные опции сетевой конфигурации
-- 🚧 **Мониторинг**: Отслеживание состояния серверов и задач
-- 🚧 **Интеграционные тесты**: Полное тестирование с реальным API
+- **Terraform** >= 1.5.0
+- **Go** >= 1.23 (только для разработки)
+- **Selectel аккаунт** с IAM токеном и доступом к API выделенных серверов
 
-## Требования
+## 🔧 Быстрый старт
 
-- [Terraform](https://www.terraform.io/downloads.html) >= 1.0
-- [Go](https://golang.org/doc/install) >= 1.23 (для разработки)
-- Аккаунт Selectel с доступом к API выделенных серверов
+### 1. Настройка аутентификации
 
-## Использование
+```bash
+export SELECTEL_TOKEN="your-iam-token"
+export SELECTEL_PROJECT_ID="your-project-uuid"
+```
 
-### Базовая конфигурация
+### 2. Базовая конфигурация
 
 ```hcl
 terraform {
+  required_version = ">= 1.5"
   required_providers {
-    selectel = {
+    selectel-baremetal = {
       source  = "selectel/selectel-baremetal"
       version = "~> 0.1"
     }
   }
 }
 
-provider "selectel" {
-  token      = var.selectel_token
-  project_id = var.project_id
+provider "selectel-baremetal" {
+  # Конфигурация берется из переменных окружения
 }
 
-# Получение доступных локаций
-data "selectel_baremetal_location" "msk" {
-  name = "Moscow"
-}
+# Получение доступных ресурсов
+data "selectel_baremetal_locations" "all" {}
+data "selectel_baremetal_services" "all" {}
+data "selectel_baremetal_os_templates" "ubuntu" {}
 
-# Получение доступных конфигураций серверов
-data "selectel_baremetal_service" "server" {
-  name = "Intel Xeon E-2288G"
-}
+# Создание базового сервера
+resource "selectel_baremetal_server" "web" {
+  name            = "my-web-server"
+  service_uuid    = data.selectel_baremetal_services.all.services[0].uuid
+  location_uuid   = data.selectel_baremetal_locations.all.locations[0].uuid
+  price_plan_uuid = data.selectel_baremetal_services.all.services[0].price_plans[0].uuid
+  project_uuid    = var.project_uuid
 
-# Получение OS шаблонов
-data "selectel_baremetal_os_template" "ubuntu" {
-  name = "Ubuntu 22.04 LTS"
-}
-
-# Создание выделенного сервера
-resource "selectel_baremetal_server" "example" {
-  name              = "my-server"
-  service_uuid      = data.selectel_baremetal_service.server.uuid
-  location_uuid     = data.selectel_baremetal_location.msk.uuid
-  price_plan_uuid   = data.selectel_baremetal_service.server.price_plans[0].uuid
-  project_uuid      = var.project_id
-  
   network {
     type      = "public"
     bandwidth = 1000
   }
-  
+
   os {
-    template_uuid = data.selectel_baremetal_os_template.ubuntu.uuid
-    ssh_keys      = [var.ssh_key]
+    template_uuid = data.selectel_baremetal_os_templates.ubuntu.templates[0].uuid
+    ssh_keys      = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC7..."]
   }
-  
+
   tags = {
     Environment = "production"
-    Team        = "infrastructure"
+    Application = "web"
   }
 }
 ```
 
-### Примеры
-
-Больше примеров доступно в директории [examples/](./examples/):
-
-- [Базовый сервер](./examples/basic-server/)
-- [Кастомная конфигурация](./examples/custom-server/)
-- [Несколько серверов](./examples/multiple-servers/)
-- [Сервер с сетевыми настройками](./examples/with-networking/)
-
-## Ресурсы
-
-- `selectel_baremetal_server` - Основной ресурс выделенного сервера
-- `selectel_baremetal_server_power` - Управление питанием сервера
-- `selectel_baremetal_server_network` - Сетевые настройки сервера
-- `selectel_baremetal_server_os` - Управление ОС сервера
-
-## Источники данных
-
-- `selectel_baremetal_locations` - Список доступных локаций
-- `selectel_baremetal_services` - Каталог услуг и конфигураций серверов
-- `selectel_baremetal_os_templates` - Доступные шаблоны операционных систем
-- `selectel_baremetal_price_plans` - Тарифные планы
-
-## Разработка
-
-### Настройка окружения
+### 3. Применение конфигурации
 
 ```bash
-# Клонирование репозитория
-git clone https://github.com/selectel/terraform-provider-selectel-baremetal.git
-cd terraform-provider-selectel-baremetal
-
-# Установка зависимостей
-make deps
-
-# Установка инструментов разработки
-make dev-setup
+terraform init
+terraform plan
+terraform apply
 ```
 
-### Сборка
+## 📖 Примеры использования
+
+В директории [`examples/`](./examples/) доступны готовые примеры:
+
+### 🔥 [Базовый сервер](./examples/basic-server/)
+Простой пример создания одного сервера с минимальными настройками.
 
 ```bash
-# Сборка провайдера
-make build
-
-# Локальная установка для тестирования
-make install
+cd examples/basic-server
+cp terraform.tfvars.example terraform.tfvars
+# Отредактируйте terraform.tfvars
+terraform init && terraform apply
 ```
 
-### Тестирование
+### 🚀 [Множественные серверы](./examples/multiple-servers/)
+Создание нескольких серверов с разными ролями (web, database, API).
+
+### 🌐 [Расширенные сетевые настройки](./examples/with-networking/)
+Серверы с различными типами сетей, VLAN и cloud-init скриптами.
+
+### ⚙️ [Настраиваемый сервер](./examples/custom-server/)
+Полностью настраиваемая конфигурация с выбором локации, ОС и сетевых параметров.
+
+## 📚 Ресурсы провайдера
+
+### Основные ресурсы
+
+| Ресурс | Описание |
+|--------|----------|
+| `selectel_baremetal_server` | Управление выделенными серверами |
+
+### Data Sources
+
+| Data Source | Описание |
+|-------------|----------|
+| `selectel_baremetal_locations` | Список доступных локаций |
+| `selectel_baremetal_location` | Информация о конкретной локации |
+| `selectel_baremetal_services` | Каталог доступных услуг |
+| `selectel_baremetal_service` | Информация о конкретной услуге |
+| `selectel_baremetal_os_templates` | Доступные шаблоны ОС |
+| `selectel_baremetal_os_template` | Информация о конкретном шаблоне |
+| `selectel_baremetal_price_plans` | Тарифные планы |
+
+## 🔐 Аутентификация
+
+### Переменные окружения (рекомендуется)
 
 ```bash
-# Запуск unit тестов
-make test
-
-# Запуск тестов с покрытием
-make test-coverage
-
-# Запуск acceptance тестов (требует настройки API токенов)
-make testacc
-```
-
-### Проверка кода
-
-```bash
-# Форматирование кода
-make fmt
-
-# Линтинг
-make lint
-
-# Полная проверка (форматирование + линтинг + тесты)
-make check
-```
-
-## Аутентификация
-
-Провайдер поддерживает несколько способов аутентификации:
-
-### Переменные окружения
-
-```bash
-export SELECTEL_TOKEN="your-api-token"
-export SELECTEL_PROJECT_ID="your-project-id"
+export SELECTEL_TOKEN="your-iam-token"
+export SELECTEL_PROJECT_ID="your-project-uuid"
 ```
 
 ### Конфигурация провайдера
 
 ```hcl
-provider "selectel" {
-  token      = "your-api-token"
-  project_id = "your-project-id"
-  endpoint   = "https://api.selectel.ru/dedicated/v2"  # опционально
+provider "selectel-baremetal" {
+  token      = "your-iam-token"
+  project_id = "your-project-uuid"
+  endpoint   = "https://api.selectel.ru/servers/v2"  # опционально
 }
 ```
 
-## Документация
+## 🛠️ Разработка
 
-- [Документация ресурсов](./docs/resources/)
-- [Документация источников данных](./docs/data-sources/)
-- [Руководства пользователя](./docs/guides/)
+### Настройка окружения разработки
 
-## Поддержка
+```bash
+git clone https://github.com/Drudj/tf_for_BareMetal.git
+cd tf_for_BareMetal
 
-- [Issues](https://github.com/selectel/terraform-provider-selectel-baremetal/issues) - сообщения об ошибках и запросы функций
-- [Discussions](https://github.com/selectel/terraform-provider-selectel-baremetal/discussions) - вопросы и обсуждения
-- [Selectel Support](https://selectel.ru/support/) - техническая поддержка Selectel
+# Установка зависимостей
+go mod download
 
-## Лицензия
+# Установка инструментов разработки
+make dev-setup
+```
 
-Этот проект лицензирован под [Mozilla Public License 2.0](LICENSE).
+### Основные команды
 
-## Участие в разработке
+```bash
+# Сборка провайдера
+make build
 
-Мы приветствуем участие в разработке! Пожалуйста, ознакомьтесь с [CONTRIBUTING.md](CONTRIBUTING.md) для получения информации о том, как внести свой вклад.
+# Локальная установка
+make install
 
-### Авторы
+# Запуск тестов
+make test
 
-- Команда разработки Selectel
-- Сообщество участников
+# Полная проверка кода
+make check
 
-## Связанные проекты
+# Форматирование кода
+make fmt
 
-- [terraform-provider-selectel](https://github.com/selectel/terraform-provider-selectel) - Основной провайдер Selectel для облачных ресурсов
-- [Selectel API Documentation](https://docs.selectel.ru/api/dedicated/) - Документация API выделенных серверов 
+# Линтинг кода
+make lint
+```
+
+### Структура проекта
+
+```
+├── cmd/terraform-provider-selectel-baremetal/  # Основной исполняемый файл
+├── internal/
+│   ├── client/         # HTTP клиент для API
+│   ├── datasources/    # Terraform data sources
+│   ├── models/         # Модели данных API
+│   ├── provider/       # Конфигурация провайдера
+│   └── resources/      # Terraform ресурсы
+├── examples/           # Примеры использования
+├── docs/              # Документация
+└── Makefile           # Команды сборки и тестирования
+```
+
+## 🧪 Тестирование
+
+### Unit тесты
+
+```bash
+make test
+```
+
+### Тесты с покрытием
+
+```bash
+make test-coverage
+```
+
+### Acceptance тесты
+
+```bash
+export SELECTEL_TOKEN="your-token"
+export SELECTEL_PROJECT_ID="your-project"
+make testacc
+```
+
+## 📖 API Документация
+
+- [Selectel Dedicated Servers API](https://docs.selectel.ru/api/dedicated/)
+- [Авторизация в API](https://docs.selectel.ru/api/authorization/)
+- [Управление серверами](https://docs.selectel.ru/servers-and-infrastructure/dedicated/)
+
+## 🆘 Поддержка
+
+- **Issues**: [GitHub Issues](https://github.com/Drudj/tf_for_BareMetal/issues) для багов и запросов функций
+- **Документация**: [Selectel API Docs](https://docs.selectel.ru/)
+- **Техподдержка**: [Selectel Support](https://selectel.ru/support/)
+
+## 📝 Лицензия
+
+Этот проект распространяется под лицензией Apache 2.0. См. файл [LICENSE](LICENSE) для деталей.
+
+## 🤝 Вклад в развитие
+
+Мы приветствуем участие сообщества! Пожалуйста, ознакомьтесь с [CONTRIBUTING.md](CONTRIBUTING.md) для получения инструкций по разработке.
+
+### Как внести вклад
+
+1. Fork репозитория
+2. Создайте feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit изменения (`git commit -m 'Add amazing feature'`)
+4. Push в branch (`git push origin feature/amazing-feature`)
+5. Откройте Pull Request 
