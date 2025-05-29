@@ -8,7 +8,7 @@ testacc:
 # Build provider
 .PHONY: build
 build:
-	go build -o terraform-provider-selectel-baremetal cmd/terraform-provider-selectel-baremetal/main.go
+	go build -o terraform-provider-selectel-baremetal ./cmd/terraform-provider-selectel-baremetal
 
 # Install provider locally for development
 .PHONY: install
