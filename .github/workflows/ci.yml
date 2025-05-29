@@ -72,7 +72,7 @@ jobs:
         go-version: 1.24.x
     
     - name: Build provider
-      run: go build -v ./cmd/terraform-provider-selectel-baremetal
+      run: make build
     
     - name: Test build
       run: ./terraform-provider-selectel-baremetal --help || true
