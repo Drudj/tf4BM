@@ -1,0 +1,17 @@
+# Скопируйте этот файл в terraform.tfvars и заполните своими данными
+
+# Данные для аутентификации в Selectel
+selectel_domain_name   = "YOUR_DOMAIN_ID"
+selectel_username      = "YOUR_USERNAME"
+selectel_password      = "YOUR_PASSWORD"
+selectel_servers_token = "YOUR_SERVERS_TOKEN"
+
+# Параметры сервера
+server_name        = "my-terraform-server"
+server_config_id   = 23  # CL23-SSD
+server_location_id = 2   # MSK-2
+server_os_id       = 1   # Debian
+server_root_size   = 50
+server_swap_size   = 5
+server_raid_type   = "RAID1"
+server_ssh_keys    = [] 
