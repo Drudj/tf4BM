@@ -3,6 +3,10 @@ private/
 *.tfvars
 *.tfvars.json
 
+# Переменные окружения с секретными данными
+*.env
+!*.env.example
+
 # Terraform
 .terraform/
 .terraform.lock.hcl
@@ -90,4 +94,23 @@ test-infrastructure/test-report.md
 # Build artifacts
 dist/
 *.zip
-*.tar.gz 
+*.tar.gz
+
+# Файлы с реальными токенами и паролями
+*.tfstate*
+terraform.tfstate*
+*.backup
+diagnostic_log.txt
+production_order_report.md
+debug_changes_log.md
+AUTHENTICATION_INTEGRATION.md
+
+# Временные и тестовые файлы
+test_server_order.tf
+test_server_order.tf.bak
+PROJECT_CLEANUP_REPORT.md
+STAGES8-12_COMPLETE.md
+
+# Терминальные конфигурации с токенами
+.terraformrc
+*.rc 
