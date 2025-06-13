@@ -1,0 +1,25 @@
+# Terraform temporary files
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+*.terraform.lock.hcl
+.terraform/
+
+# Binary files
+terraform-provider-selectel
+terraform-provider-selectel_*
+
+# Logs and temporary files
+*.log
+diagnostic_log.txt
+
+# Test configuration files with potentially sensitive data
+test_*.tf
+main.tf.old
+
+# IDE files
+.idea
+.DS_Store
+
+# Build artifacts
+dist/

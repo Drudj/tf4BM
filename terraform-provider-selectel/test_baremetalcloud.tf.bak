@@ -1,0 +1,113 @@
+terraform {
+  required_providers {
+    selectel = {
+      source = "terraform.local/local/selectel"
+    }
+  }
+}
+
+# Конфигурация провайдера Selectel
+provider "selectel" {
+  domain_name = var.selectel_domain_name
+  username    = var.selectel_username
+  password    = var.selectel_password
+  auth_url    = "https://cloud.api.selcloud.ru/identity/v3/"
+  auth_region = "ru-1"
+  servers_token = var.selectel_servers_token
+}
+
+# Переменные
+variable "selectel_domain_name" {
+  description = "Selectel domain name (account ID)"
+  type        = string
+}
+
+variable "selectel_username" {
+  description = "Selectel username"
+  type        = string
+}
+
+variable "selectel_password" {
+  description = "Selectel password"
+  type        = string
+  sensitive   = true
+}
+
+variable "selectel_servers_token" {
+  description = "Selectel servers API token"
+  type        = string
+  sensitive   = true
+}
+
+# Пример 1: Базовая конфигурация с настройками по умолчанию
+resource "selectel_baremetalcloud_server_v1" "basic_server" {
+  name      = "basic-test-server"
+  root_size = 450  # 450 ГБ для root раздела (480 ГБ диск - 30 ГБ для системы)
+  comment   = "Basic test server with default partitions"
+  
+  # Все остальные параметры используют значения по умолчанию:
+  # - location_uuid: SPB-4 
+  # - service_uuid: AR21-SSD
+  # - price_plan_uuid: суточный тарифный план
+  # - os_template: debian
+  # - version: 12v2
+  # - raid_type: No RAID
+  # - swap_size: 5 ГБ
+}
+
+# Пример 2: Полная конфигурация с пользовательскими настройками
+resource "selectel_baremetalcloud_server_v1" "advanced_server" {
+  name      = "advanced-test-server"
+  root_size = 400  # 400 ГБ для root раздела
+
+  # Настройки сервера
+  os_template = "ubuntu"
+  version     = "2004"  # Ubuntu 20.04
+  comment     = "Advanced server with custom partitions"
+  
+  # Настройки RAID и разделов
+  raid_type = "RAID1"
+  swap_size = 8  # 8 ГБ swap
+  
+  # Дополнительные разделы
+  custom_partitions = [
+    {
+      mount  = "/var"
+      fstype = "ext4"
+      size   = 50  # 50 ГБ для /var
+    },
+    {
+      mount  = "/home"
+      fstype = "ext4" 
+      size   = 100  # 100 ГБ для /home
+    }
+  ]
+}
+
+# Пример 3: Минимальная конфигурация для тестирования
+resource "selectel_baremetalcloud_server_v1" "test_server" {
+  name      = "ar21-ssd-terraform-test"
+  root_size = 470  # 470 ГБ для root раздела
+  comment   = "Terraform provider test - AR21-SSD with daily billing"
+}
+
+# Выводы
+output "basic_server_uuid" {
+  description = "UUID of the basic server"
+  value       = selectel_baremetalcloud_server_v1.basic_server.uuid
+}
+
+output "basic_server_task_id" {
+  description = "Task ID for basic server creation"
+  value       = selectel_baremetalcloud_server_v1.basic_server.task_id
+}
+
+output "advanced_server_uuid" {
+  description = "UUID of the advanced server"
+  value       = selectel_baremetalcloud_server_v1.advanced_server.uuid
+}
+
+output "test_server_uuid" {
+  description = "UUID of the test server"
+  value       = selectel_baremetalcloud_server_v1.test_server.uuid
+} 
